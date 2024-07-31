@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 // IMPORTING CONTRACT
-import "./Ownable.sol";;
+import "./Ownable.sol";
 import "./ReentrancyGuard.sol";
 import "./Initializable.sol";
 import "./IERC20.sol";
@@ -75,7 +75,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
 
 
     function _TokenStaking_init_unchained(
-        address owner,
+        address owner_,
         address tokenAddress_,
         uint256 apyRate_,
         uint256 minimumStakingAmount_,
@@ -84,7 +84,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
         uint256 stakeEndDate_,
         uint256 stakeDays_,
         uint256 earlyUnstakeFeePecentage_ 
-    ) internal onlyIntializing {
+    ) internal onlyInitializing {
         require(_apyRate <= 10000, "TokenStaking: apy rate should be less than 10000");
         require(stakeDays_ > 0, "TokenStakng: stake days must be non-zero");
         require(tokenAddress_ != address(0), "TokenStaking: token address cannot be 0 address");
@@ -95,7 +95,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
         _apyRate = apyRate_;
         _minimumStakingAmount = minimumStakingAmount_;
         _maxStakeTokenLimit = maxStakingTokenLimit_;
-        _stakeStartDate = stakeStartDate;
+        _stakeStartDate = stakeStartDate_;
         _stakeEndDate = stakeEndDate_;
         _stakeDays = stakeDays_ * 1 days;
         _earlyUnstakeFeePercentage = earlyUnstakeFeePecentage_;
@@ -109,7 +109,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     }
 
 
-   function getStakeStartDate() external view retuns (uint256){
+   function getStakeStartDate() external view returns (uint256){
     return _stakeStartDate;
    }
 
@@ -138,7 +138,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     return _isStakingPaused;
    }
 
-   function getAPY() view returns (uint256){
+   function getAPY() external view returns (uint256){
     return _apyRate;
    }
 
@@ -151,7 +151,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     return IERC20(_tokenAddress).balanceOf(address(this)) - _totalStakedTokens;
    }
 
-   function getUser() view returns (User memory){
+   function getUser() external view returns (User memory){
     return _users[msg.sender];
    }
 
@@ -222,7 +222,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     require(
         IERC20(_tokenAddress).transferFrom(msg.sender, address(this), _amount),
         "TokenStaking: failed to transfer tokens"
-    )
+    );
 
     emit Stake(user_, _amount);
    }
@@ -244,7 +244,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     }
 
 
-    uint256 amountToUnstake - _amount - feeEarlyUnstake;
+    uint256 amountToUnstake = _amount - feeEarlyUnstake;
 
     _users[user].stakeAmount -= _amount;
 
