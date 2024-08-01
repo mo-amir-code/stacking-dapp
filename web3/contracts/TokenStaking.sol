@@ -22,11 +22,11 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     uint256 _maxStakeTokenLimit;
     uint256 _stakeEndDate;
     uint256 _stakeStartDate;
-    uint256 _totalStakedToken;
+    uint256 _totalStakedTokens;
     uint256 _totalUsers;
-    uint256 stakeDays;
-    uint256 _earylyUnstakeFeePercentage;
-    bool isStakingPaused;
+    uint256 _stakeDays;
+    uint256 _earlyUnstakeFeePercentage;
+    bool _isStakingPaused;
 
     address private _tokenAddress;
 
@@ -45,12 +45,11 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
     modifier whenTreasuryHasBalance(uint256 amount){
         require(IERC20(_tokenAddress).balaneOf(address(this)) >= amount,
         "Token Staking: insufficient funds in the treasury");
-
         _;
     }
 
     function initialize(
-        address owner,
+        address owner_,
         address tokenAddress_,
         uint256 apyRate_,
         uint256 minimumStakingAmount_,
@@ -69,7 +68,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
             stakeStartDate_,
             stakeEndDate_,
             stakeDays_,
-            earylyUnstakeFeePercentage_
+            earlyUnstakeFeePecentage_
         );
     }
 
@@ -123,7 +122,7 @@ contract TokenStaking is Ownable, ReentrancyGuard, Initializable {
 
 
    function getTotalUser() external view returns (uint256) {
-    return _totalUser;
+    return _totalUsers;
    }
 
    function getStakeDays() external view returns (uint256) {
